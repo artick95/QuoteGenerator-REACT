@@ -8,12 +8,16 @@ function App() {
   const [quote, setQuote] = useState(
     "Those who excel in virtue have the best right of all to rebel, but then they are of all men the least inclined to do so."
   );
+  const [isLoading, setisLoading] = useState(0);
 
   async function getQuote() {
     const apiUrl = "https://goquotes-api.herokuapp.com/api/v1/random?count=1";
     axios
       .get(apiUrl)
-      .then((response) => setQuote(response.data.quotes[0].text))
+      .then((response) => {
+        setisLoading(0);
+        setQuote(response.data.quotes[0].text);
+      })
       .catch((error) => console.log(error));
   }
 
@@ -22,10 +26,18 @@ function App() {
       <div className="card">
         <div className="textButtonContainer">
           <h2 className="text">"{quote}"</h2>
-          <button type="button" className="button" onClick={() => getQuote()}>
+          <button
+            type="button"
+            className="button"
+            onClick={() => {
+              setisLoading(1);
+              getQuote();
+            }}
+          >
             Generate New Quote
           </button>
         </div>
+        <div className={`${isLoading === 1 ? "loader" : "0"}`}></div>
       </div>
     </div>
   );
